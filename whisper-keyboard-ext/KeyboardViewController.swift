@@ -9,6 +9,11 @@ import UIKit
 
 class KeyboardViewController: UIInputViewController {
 
+    var isRecording: Bool = false
+    private var centerButton: UIButton!  // Add property to store button reference
+
+    // var inputView: UIView! TODO: See what inputView is
+
     override func updateViewConstraints() {
         super.updateViewConstraints()
         
@@ -21,8 +26,8 @@ class KeyboardViewController: UIInputViewController {
         // Perform custom UI setup here
         
         // Create center button
-        let centerButton = UIButton(type: .system)
-        centerButton.setTitle("My Button", for: .normal)
+        centerButton = UIButton(type: .system)  // Store reference to button
+        centerButton.setTitle("Record", for: .normal)
         centerButton.backgroundColor = .systemGreen
         centerButton.setTitleColor(.white, for: .normal)
         centerButton.layer.cornerRadius = 5
@@ -55,8 +60,9 @@ class KeyboardViewController: UIInputViewController {
 
     // Add this function to handle button taps
     @objc func centerButtonTapped() {
-        // Insert some text when button is tapped
-        textDocumentProxy.insertText("Hello!")
+        isRecording.toggle()
+        centerButton.setTitle(isRecording ? "Recording..." : "Record", for: .normal)
+        textDocumentProxy.insertText("Hi")
     }
 
 }
