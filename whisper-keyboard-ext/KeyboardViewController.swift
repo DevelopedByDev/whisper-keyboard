@@ -9,8 +9,6 @@ import UIKit
 
 class KeyboardViewController: UIInputViewController {
 
-    @IBOutlet var nextKeyboardButton: UIButton!
-    
     override func updateViewConstraints() {
         super.updateViewConstraints()
         
@@ -21,22 +19,29 @@ class KeyboardViewController: UIInputViewController {
         super.viewDidLoad()
         
         // Perform custom UI setup here
-        self.nextKeyboardButton = UIButton(type: .system)
         
-        self.nextKeyboardButton.setTitle(NSLocalizedString("Next Keyboard", comment: "Title for 'Next Keyboard' button"), for: [])
-        self.nextKeyboardButton.sizeToFit()
-        self.nextKeyboardButton.translatesAutoresizingMaskIntoConstraints = false
+        // Create center button
+        let centerButton = UIButton(type: .system)
+        centerButton.setTitle("My Button", for: .normal)
+        centerButton.backgroundColor = .systemGreen
+        centerButton.setTitleColor(.white, for: .normal)
+        centerButton.layer.cornerRadius = 5
+        centerButton.sizeToFit()
+        centerButton.translatesAutoresizingMaskIntoConstraints = false
+        centerButton.addTarget(self, action: #selector(centerButtonTapped), for: .touchUpInside)
         
-        self.nextKeyboardButton.addTarget(self, action: #selector(handleInputModeList(from:with:)), for: .allTouchEvents)
+        self.view.addSubview(centerButton)
         
-        self.view.addSubview(self.nextKeyboardButton)
-        
-        self.nextKeyboardButton.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
-        self.nextKeyboardButton.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
+        // Center the button in the view
+        NSLayoutConstraint.activate([
+            centerButton.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
+            centerButton.centerYAnchor.constraint(equalTo: self.view.centerYAnchor),
+            centerButton.widthAnchor.constraint(equalToConstant: 100),  // Set your desired width
+            centerButton.heightAnchor.constraint(equalToConstant: 40)   // Set your desired height
+        ])
     }
     
     override func viewWillLayoutSubviews() {
-        self.nextKeyboardButton.isHidden = !self.needsInputModeSwitchKey
         super.viewWillLayoutSubviews()
     }
     
@@ -46,15 +51,12 @@ class KeyboardViewController: UIInputViewController {
     
     override func textDidChange(_ textInput: UITextInput?) {
         // The app has just changed the document's contents, the document context has been updated.
-        
-        var textColor: UIColor
-        let proxy = self.textDocumentProxy
-        if proxy.keyboardAppearance == UIKeyboardAppearance.dark {
-            textColor = UIColor.white
-        } else {
-            textColor = UIColor.black
-        }
-        self.nextKeyboardButton.setTitleColor(textColor, for: [])
+    }
+
+    // Add this function to handle button taps
+    @objc func centerButtonTapped() {
+        // Insert some text when button is tapped
+        textDocumentProxy.insertText("Hello!")
     }
 
 }
