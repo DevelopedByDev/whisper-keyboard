@@ -6,11 +6,16 @@
 //
 
 import UIKit
+import Foundation
+import AVFoundation
+
 
 class KeyboardViewController: UIInputViewController {
 
     var isRecording: Bool = false
-    private var centerButton: UIButton!  // Add property to store button reference
+    private var recordingButton: UIButton!  // Add property to store button reference
+    private var cancelButton: UIButton!  // Add property to store button reference
+
 
     // var inputView: UIView! TODO: See what inputView is
 
@@ -23,26 +28,39 @@ class KeyboardViewController: UIInputViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // Perform custom UI setup here
+        // Create recording button
+        recordingButton = UIButton(type: .system)
+        recordingButton.setTitle("Record", for: .normal)
+        recordingButton.backgroundColor = .white
+        recordingButton.setTitleColor(.red, for: .normal)
+        recordingButton.layer.cornerRadius = 5
+        recordingButton.translatesAutoresizingMaskIntoConstraints = false
+        recordingButton.addTarget(self, action: #selector(recordingButtonTapped), for: .touchUpInside)
         
-        // Create center button
-        centerButton = UIButton(type: .system)  // Store reference to button
-        centerButton.setTitle("Record", for: .normal)
-        centerButton.backgroundColor = .systemGreen
-        centerButton.setTitleColor(.white, for: .normal)
-        centerButton.layer.cornerRadius = 5
-        centerButton.sizeToFit()
-        centerButton.translatesAutoresizingMaskIntoConstraints = false
-        centerButton.addTarget(self, action: #selector(centerButtonTapped), for: .touchUpInside)
+        // Create cancel button
+        cancelButton = UIButton(type: .system)
+        cancelButton.setTitle("Cancel", for: .normal)
+        cancelButton.backgroundColor = .systemBlue
+        cancelButton.setTitleColor(.white, for: .normal)
+        cancelButton.layer.cornerRadius = 5
+        cancelButton.translatesAutoresizingMaskIntoConstraints = false
+        cancelButton.isHidden = true
         
-        self.view.addSubview(centerButton)
+        // Add buttons to view
+        self.view.addSubview(recordingButton)
+        self.view.addSubview(cancelButton)
         
-        // Center the button in the view
+        // Set up constraints
         NSLayoutConstraint.activate([
-            centerButton.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
-            centerButton.centerYAnchor.constraint(equalTo: self.view.centerYAnchor),
-            centerButton.widthAnchor.constraint(equalToConstant: 100),  // Set your desired width
-            centerButton.heightAnchor.constraint(equalToConstant: 40)   // Set your desired height
+            recordingButton.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
+            recordingButton.centerYAnchor.constraint(equalTo: self.view.centerYAnchor),
+            recordingButton.widthAnchor.constraint(equalToConstant: 100),
+            recordingButton.heightAnchor.constraint(equalToConstant: 40),
+            
+            cancelButton.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
+            cancelButton.topAnchor.constraint(equalTo: recordingButton.bottomAnchor, constant: 10),
+            cancelButton.widthAnchor.constraint(equalToConstant: 80),
+            cancelButton.heightAnchor.constraint(equalToConstant: 40)
         ])
     }
     
@@ -59,10 +77,15 @@ class KeyboardViewController: UIInputViewController {
     }
 
     // Add this function to handle button taps
-    @objc func centerButtonTapped() {
+    @objc func recordingButtonTapped() {
         isRecording.toggle()
-        centerButton.setTitle(isRecording ? "Recording..." : "Record", for: .normal)
-        textDocumentProxy.insertText("Hi")
+        recordingButton.setTitle(isRecording ? "Recording..." : "Record", for: .normal)
+        recordingButton.backgroundColor = isRecording ? .systemRed : .white
+        recordingButton.setTitleColor(isRecording ? .white : .red, for: .normal)
+        
+        // Show/hide cancel and stop buttons
+        cancelButton.isHidden = !isRecording
+
     }
 
 }
