@@ -45,6 +45,8 @@ class KeyboardViewController: UIInputViewController {
         cancelButton.layer.cornerRadius = 5
         cancelButton.translatesAutoresizingMaskIntoConstraints = false
         cancelButton.isHidden = true
+        cancelButton.addTarget(self, action: #selector(cancelButtonTapped), for: .touchUpInside)
+
         
         // Add buttons to view
         self.view.addSubview(recordingButton)
@@ -86,6 +88,11 @@ class KeyboardViewController: UIInputViewController {
         // Show/hide cancel and stop buttons
         cancelButton.isHidden = !isRecording
 
+        // TODO: Add recording logic
+    }
+
+    @objc func cancelButtonTapped() {
+        recordingButtonTapped()
     }
 
 }
